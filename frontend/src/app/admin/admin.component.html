@@ -1,0 +1,199 @@
+<header class="admin-header">
+  <button (click)="logout()" class="logout-btn">Logout</button>
+</header>
+
+<div class="container">
+  <h1>Rad sa korisnicima</h1>
+  <div *ngFor="let user of users; let i = index">
+    <div>
+      <strong>Podaci za: {{ originalUsernames[i] }}</strong>
+    </div>
+    <div>
+      <label>Korisnicko ime:</label>
+      <input [(ngModel)]="user.username">
+    </div>
+    <div>
+      <label>Password:</label>
+      <input [(ngModel)]="user.password" type="password">
+    </div>
+    <div>
+      <label>Ime:</label>
+      <input [(ngModel)]="user.name">
+    </div>
+    <div>
+      <label>Prezime:</label>
+      <input [(ngModel)]="user.surname">
+    </div>
+    <div>
+      <label>Pol:</label>
+      <input [(ngModel)]="user.sex">
+    </div>
+    <div>
+      <label>Adresa:</label>
+      <input [(ngModel)]="user.address">
+    </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input [(ngModel)]="user.phone_number">
+    </div>
+    <div>
+        <label>Email:</label>
+        <input [(ngModel)]="user.email">
+      </div>
+    <div>
+        <label>Profilna:</label>
+        <input [(ngModel)]="user.profile_photo" readonly>
+        <img *ngIf="user.profile_photo" [src]="getProfilePhotoUrl(user.profile_photo)" alt="Profile Photo" style="width: 100px; height: 100px;">
+      </div>
+    <div>
+      <label>Postavi novu profilnu:</label>
+      <input type="file" (change)="onFileSelected($event, user)">
+    </div>
+    <div>
+      <label>Broj kreditne kartice:</label>
+      <input [(ngModel)]="user.credit_card_number">
+    </div>
+    <div>
+      <label>Tip:</label>
+      <input [(ngModel)]="user.role">
+    </div>
+    <div>
+        <label>Odobren:</label>
+        <input type="checkbox" [(ngModel)]="user.approved" [disabled]="user.approved || user.rejected" (change)="onApprovalChange(user)">
+      </div>
+    <div>
+      <label>Odbijen:</label>
+      <input type="checkbox" [(ngModel)]="user.rejected" [disabled]="user.approved || user.rejected" (change)="onRejectionChange(user)">
+    </div>
+    <div>
+      <button (click)="onSubmit(user)">Submit</button>
+    </div>
+    <hr>
+  </div>
+
+  <h2>Forma za dodavanje novog dizajnera</h2>
+  <form (ngSubmit)="onAddDesigner()" #designerForm="ngForm">
+    <div>
+      <label>Korisnicko ime:</label>
+      <input type="text" [(ngModel)]="newDesigner.username" name="username" required>
+    </div>
+    <div>
+      <label>Password:</label>
+      <input type="password" [(ngModel)]="newDesigner.password" name="password" required>
+      <div *ngIf="passwordError" class="error">{{ passwordError }}</div>
+    </div>
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="newDesigner.email" name="email" required>
+      <div *ngIf="emailError" class="error">{{ emailError }}</div>
+    </div>
+    <div>
+      <label>Ime:</label>
+      <input type="text" [(ngModel)]="newDesigner.name" name="name" required>
+    </div>
+    <div>
+      <label>Prezime:</label>
+      <input type="text" [(ngModel)]="newDesigner.surname" name="surname" required>
+    </div>
+    <div>
+      <label>Pol:</label>
+      <select [(ngModel)]="newDesigner.sex" name="sex" required>
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select>
+    </div>
+    <div>
+      <label>Adresa:</label>
+      <input type="text" [(ngModel)]="newDesigner.address" name="address" required>
+    </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input type="text" [(ngModel)]="newDesigner.phone_number" name="phone_number" required>
+    </div>
+    <div>
+      <label>Broj kreditne kartice:</label>
+      <input type="text" [(ngModel)]="newDesigner.credit_card_number" name="credit_card_number" required>
+      <div *ngIf="creditCardError" class="error">{{ creditCardError }}</div>
+    </div>
+    <div>
+      <label>Profilna slika:</label>
+      <input type="file" (change)="onDesignerFileSelected($event)">
+    </div>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+  <h3>Forma za dodavanje nove kompanije</h3>
+  <form #companyForm="ngForm" (ngSubmit)="onAddCompany()">
+    <div>
+      <label for="companyName">Ime:</label>
+      <input type="text" [(ngModel)]="newCompany.name" id="companyName" name="name" required />
+    </div>
+    
+    <div>
+      <label for="companyAddress">Adresa:</label>
+      <input type="text" [(ngModel)]="newCompany.address" id="companyAddress" name="address" required />
+    </div>
+    
+    <div>
+      <label for="companyServices">Opcije:</label>
+      <input type="text" [(ngModel)]="newService" id="newService" name="newService" placeholder="Enter a service" />
+      <button type="button" (click)="addService()">Dodaj</button>
+      
+      <ul>
+        <li *ngFor="let service of newCompany.services; let i = index">
+          {{ service }}
+          <button type="button" (click)="removeService(i)">Ukloni</button>
+        </li>
+      </ul>
+    </div>
+    
+    <div>
+      <label for="companyPrices">Cene:</label>
+      <input type="number" [(ngModel)]="newPrice" id="newPrice" name="newPrice" placeholder="Enter a price" />
+      <button type="button" (click)="addPrice()">Dodaj</button>
+    
+      <ul>
+        <li *ngFor="let price of newCompany.prices; let i = index">
+          {{ price }}
+          <button type="button" (click)="removePrice(i)">Ukloni</button>
+        </li>
+      </ul>
+    </div>
+    
+    <div>
+      <label for="contactNumber">Broj telefona:</label>
+      <input type="text" [(ngModel)]="newCompany.contact_number" id="contactNumber" name="contact_number" required />
+    </div>
+    
+    <div>
+      <label for="vacationStart">Start odmora:</label>
+      <input type="date" [(ngModel)]="newCompany.vacation_start" id="vacationStart" name="vacation_start" required />
+    </div>
+  
+    <div>
+      <label for="vacationEnd">Kraj odmora:</label>
+      <input type="date" [(ngModel)]="newCompany.vacation_end" id="vacationEnd" name="vacation_end" required />
+    </div>
+  
+    <div>
+      <label for="companyDecorators">Dodaj dizajnera:</label>
+      <input type="text" [(ngModel)]="designerUsername" id="designerUsername" name="designerUsername" placeholder="Enter designer username" />
+      <button type="button" (click)="addDesignerByUsername()">Dodaj</button>
+  
+      <ul>
+        <li *ngFor="let designer of newCompany.decorators; let i = index">
+          {{ designer }}
+          <button type="button" (click)="removeDesigner(i)">Ukloni</button>
+        </li>
+      </ul>
+    </div>
+    
+    <button type="submit" [disabled]="!companyForm.form.valid">Submit</button>
+  </form>
+</div>
+
+<footer class="admin-footer">
+  <button (click)="scrollToTop()" class="button">↑ vrh</button>
+</footer>

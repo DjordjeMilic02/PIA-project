@@ -1,0 +1,161 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 20%;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+li {
+    background-color: #d7dce0;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.navigation-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.navigation-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.navigation-controls button[disabled] {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+form {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea {
+    width: 10%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.submit-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Error Message */
+.error-message {
+    color: #dc3545;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Button to go back */
+button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #5a6268;
+}
+
+/* Additional Services */
+.form-group > div {
+    margin-bottom: 10px;
+}
+
+/* Canvas Styling */
+canvas {
+    display: block;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .navigation-controls button,
+    .submit-button,
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}

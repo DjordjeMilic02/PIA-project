@@ -1,0 +1,176 @@
+<header class="admin-header">
+  <button (click)="logout()" class="logout-btn">Logout</button>
+</header>
+
+<div class="vlasnik-container">
+  <h2>Informacije o vlasniku</h2>
+
+  <div *ngIf="errorMessage" class="notification error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="notification success">
+    {{ successMessage }}
+  </div>
+
+  <div class="navigation-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 0">&lt; Prev</button>
+    <span>Strana {{ currentPage + 1 }} od {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Next &gt;</button>
+  </div>
+
+  <form *ngIf="owner" (ngSubmit)="updateOwner()">
+    <div *ngIf="currentPage === 0">
+      <div class="form-group">
+        <label for="username">Korisnicko ime</label>
+        <input type="text" id="username" [(ngModel)]="owner.username" name="username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" [(ngModel)]="owner.email" name="email" required />
+        <div *ngIf="emailError" class="error-message">
+          {{ emailError }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Ime</label>
+        <input type="text" id="name" [(ngModel)]="owner.name" name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="surname">Prezime</label>
+        <input type="text" id="surname" [(ngModel)]="owner.surname" name="surname" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone_number">Broj telefona</label>
+        <input type="text" id="phone_number" [(ngModel)]="owner.phone_number" name="phone_number" />
+      </div>
+
+      <div class="form-group">
+        <label for="credit_card_number">Broj kreditne kartice</label>
+        <input type="text" id="credit_card_number" [(ngModel)]="owner.credit_card_number" name="credit_card_number" required />
+        <div *ngIf="creditCardError" class="error-message">
+          {{ creditCardError }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Profilna slika:</label>
+        <input [(ngModel)]="owner.profile_photo" [ngModelOptions]="{standalone: true}" readonly />
+        <img *ngIf="owner.profile_photo" [src]="getProfilePhotoUrl(owner.profile_photo)" alt="Profile Photo" style="width: 100px; height: 100px;" />
+      </div>
+
+      <div class="form-group">
+        <label>Postavi novu sliku:</label>
+        <input type="file" (change)="onFileSelected($event, owner)" />
+      </div>
+      <button type="submit" class="update-button" [disabled]="currentPage !== 0">Submit</button>
+    </div>
+
+    <div *ngIf="currentPage === 1">
+      <h3>Kompanije</h3>
+      
+      <div class="search-and-sort-controls">
+        <input type="text" placeholder="Search by name" [(ngModel)]="searchName" name="searchName" (input)="updateFilteredCompanies()" />
+        <input type="text" placeholder="Search by address" [(ngModel)]="searchAddress" name="searchAddress" (input)="updateFilteredCompanies()" />
+
+        <button type="button" (click)="sortCompaniesByName()">Sortiraj po imenu</button>
+        <button type="button" (click)="sortCompaniesByAddress()">Sortiraj po adresi</button>
+      </div>
+      
+      <div class="company-list">
+        <div *ngFor="let company of filteredCompanies; let i = index" class="company-item">
+          <h4>
+            <a [routerLink]="['/company-details', i]">{{ company.name }}</a>
+          </h4>
+          <p>Adresa: {{ company.address }}</p>
+          <p>Dizajneri:</p>
+          <ul>
+            <li *ngFor="let designer of decoratorsMap.get(company.name) || []">
+              {{ designer.name }} {{ designer.surname }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="currentPage === 2">
+      <h3>Neprihvaceni zahtevi</h3>
+    
+      <div *ngIf="zahtevErrorMessage" class="notification error">
+        {{ zahtevErrorMessage }}
+      </div>
+    
+      <div *ngIf="zahtevi.length > 0; else noZahtevi">
+        <ul>
+          <li *ngFor="let zahtev of zahtevi">
+            <p><strong>ID:</strong> {{ zahtev._id }}</p>
+            <p><strong>Datum:</strong> {{ zahtev.dateTime | date }}</p>
+            <p><strong>Tip:</strong> {{ zahtev.Type }}</p>
+            <p><strong>Kompanija:</strong> {{ zahtev.company }}</p>
+            <p><strong>Status:</strong> {{ zahtev.finished ? 'Finished' : 'In Progress' }}</p>
+            <p><strong>Odbijen?:</strong> {{ zahtev.rejected ? 'Yes' : 'No' }}</p>
+            <p><strong>Razlog odbitka:</strong> {{ zahtev.rejectionText }}</p>
+            
+            <button *ngIf="isMoreThanOneDayInFuture(zahtev.dateTime)" (click)="deleteZahtev(zahtev._id)">
+              Obrisi zahtev
+            </button>
+    
+            <hr />
+          </li>
+        </ul>
+      </div>
+    
+      <ng-template #noZahtevi>
+        <p>Nemate zahteve.</p>
+      </ng-template>
+    </div>
+
+    <div *ngIf="currentPage === 3">
+      <h3>Trenutno aktivne povrsine</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Datum zavrsetka radova</th>
+            <th>Broj vodenih povrsina</th>
+            <th>Akcije</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of pastRequests">
+            <td>{{ request.dateFinished | date: 'shortDate' }}</td>
+            <td>{{ request.waterSurfaceCount }}</td>
+            <td>
+              <button *ngIf="isOlderThanSixMonths(request.dateActive)" (click)="handleOdrzavanje(request)">
+                Odrzavanje
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <h3>Zahtevi u toku odrzavanja</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Datum zavrsetka radova</th>
+            <th>Broj vodenih povrsina</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of futureRequests">
+            <td>{{ request.dateFinished | date: 'shortDate' }}</td>
+            <td>{{ request.waterSurfaceCount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+<footer class="admin-footer">
+  <button (click)="scrollToTop()" class="button">↑ vrh</button>
+</footer>

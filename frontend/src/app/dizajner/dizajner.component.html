@@ -1,0 +1,171 @@
+<header class="admin-header">
+  <button (click)="logout()" class="logout-btn">Logout</button>
+</header>
+
+<div class="dizajner-container">
+    <h2>Informacije za dizajnera</h2>
+  
+    <div *ngIf="errorMessage" class="notification error">
+      {{ errorMessage }}
+    </div>
+  
+    <div *ngIf="successMessage" class="notification success">
+      {{ successMessage }}
+    </div>
+  
+    <div class="navigation-controls">
+      <button (click)="previousPage()" [disabled]="currentPage === 0">&lt; Prev</button>
+      <span>Strana {{ currentPage + 1 }} od {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Next &gt;</button>
+    </div>
+  
+    <form *ngIf="designer" (ngSubmit)="updateDesigner()">
+      <div *ngIf="currentPage === 0">
+        <div class="form-group">
+          <label for="username">Korisnicno ime</label>
+          <input type="text" id="username" [(ngModel)]="designer.username" name="username" required />
+        </div>
+  
+        <div class="form-group">
+          <label for="email">Password</label>
+          <input type="email" id="email" [(ngModel)]="designer.email" name="email" required />
+          <div *ngIf="emailError" class="error-message">
+            {{ emailError }}
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="name">Ime</label>
+          <input type="text" id="name" [(ngModel)]="designer.name" name="name" required />
+        </div>
+  
+        <div class="form-group">
+          <label for="surname">Prezime</label>
+          <input type="text" id="surname" [(ngModel)]="designer.surname" name="surname" required />
+        </div>
+  
+        <div class="form-group">
+          <label for="phone_number">Broj telefona</label>
+          <input type="text" id="phone_number" [(ngModel)]="designer.phone_number" name="phone_number" />
+        </div>
+
+        <div class="form-group">
+            <label for="phone_number">Broj kreditne kartice</label>
+            <input type="text" id="phone_number" [(ngModel)]="designer.credit_card_number" name="phone_number" />
+          </div>
+  
+        <div class="form-group">
+          <label>Profilna slika:</label>
+          <input [(ngModel)]="designer.profile_photo" [ngModelOptions]="{standalone: true}" readonly />
+          <img *ngIf="designer.profile_photo" [src]="getProfilePhotoUrl(designer.profile_photo)" alt="Profile Photo" style="width: 100px; height: 100px;" />
+        </div>
+  
+        <div class="form-group">
+          <label>Izaberi novu profilnu:</label>
+          <input type="file" (change)="onFileSelected($event, designer)" />
+        </div>
+        <button type="submit" class="update-button" [disabled]="currentPage !== 0">Submit</button>
+      </div>
+    
+    <div *ngIf="currentPage === 1">
+    <h3>Zahtevi za posao</h3>
+  
+    <table *ngIf="requests.length > 0" class="request-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Povrsina</th>
+          <th>Tip</th>
+          <th>Extra</th>
+          <th>Status</th>
+          <th>Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of requests">
+          <td>{{ request._id }}</td>
+          <td>{{ request.Area }}</td>
+          <td>{{ request.Type }}</td>
+          <td>{{ request.extra }}</td>
+          <td>{{ request.finished ? 'Finished' : request.rejected ? 'Rejected' : request.designated ? 'Assigned' : 'Unassigned' }}</td>
+          <td>
+            <button *ngIf="!request.designated && !request.rejected" (click)="acceptTask(request._id)">Prihvati</button>
+            <button *ngIf="!request.rejected && !request.finished && request.designated === designer?.username" (click)="finishTask(request._id)">Zavrsi</button>
+            <button *ngIf="!request.designated && !request.rejected" (click)="rejectTask(request._id)">Odbij</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <p *ngIf="requests.length === 0">Nema novih zahteva za vasu kompaniju.</p>
+  </div>
+  
+      <div *ngIf="currentPage === 2">
+        <h3>Zahtevi za odrzavanje</h3>
+  
+        <table *ngIf="maintenanceRequests.length > 0" class="request-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Povrsina</th>
+              <th>Tip</th>
+              <th>Extra</th>
+              <th>Porcenjeno vreme zavrsetka</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of maintenanceRequests">
+              <td>{{ request._id }}</td>
+              <td>{{ request.Area }}</td>
+              <td>{{ request.Type }}</td>
+              <td>{{ request.extra }}</td>
+              <td>
+                <input type="number" [(ngModel)]="estimatedHours" name="estimatedHours_{{ request._id }}" min="1" placeholder="Hours" />
+              </td>
+              <td>
+                <button (click)="acceptMaintenance(request)">Prihvati</button>
+                <button (click)="rejectMaintenance(request._id)">Odbij</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <p *ngIf="maintenanceRequests.length === 0">Nema pristiglih zahteva za odrzavanje.</p>
+      </div>
+  
+      <div *ngIf="currentPage === 3">
+        <div>
+          <h2>Odradjeno poslova ovog meseca</h2>
+          <canvas baseChart
+                  [type]="monthlyJobsChartType"
+                  [data]="monthlyJobsChartData"
+                  [options]="monthlyJobsChartOptions">
+          </canvas>
+        </div>
+        
+        <div>
+          <h2>Odradjeno poslova po dizajneru</h2>
+          <canvas baseChart
+                  [type]="designerJobsChartType"
+                  [data]="designerJobsChartData"
+                  [options]="designerJobsChartOptions">
+          </canvas>
+        </div>
+        
+        <div>
+          <h2>Odradjeno poslova po danu u nedelji</h2>
+          <canvas baseChart
+                  [type]="weeklyJobsChartType"
+                  [data]="weeklyJobsChartData"
+                  [options]="weeklyJobsChartOptions">
+          </canvas>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+<footer class="admin-footer">
+  <button (click)="scrollToTop()" class="button">↑ vrh</button>
+</footer>
+  

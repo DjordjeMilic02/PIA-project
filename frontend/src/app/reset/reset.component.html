@@ -1,0 +1,41 @@
+<div class="reset-password-container">
+    <h2>Promena passworda</h2>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+  
+    <form (ngSubmit)="resetPassword()">
+      <div class="form-group">
+        <label for="username">Korisnicko ime</label>
+        <input type="text" id="username" [(ngModel)]="username" name="username" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Trenutni password</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="newPassword">Novi password</label>
+        <input type="password" id="newPassword" [(ngModel)]="newPassword" name="newPassword" required />
+        <div *ngIf="passwordError" class="error-message">
+          {{ passwordError }}
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="confirmPassword">Ponovi novi password</label>
+        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+        <div *ngIf="confirmPasswordError" class="error-message">
+          {{ confirmPasswordError }}
+        </div>
+      </div>
+  
+      <button type="submit" class="reset-button">Submit</button>
+    </form>
+  </div>

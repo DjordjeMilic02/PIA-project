@@ -1,0 +1,34 @@
+<button (click)="login()">LOGIN</button>
+<button (click)="registration()">REGISTRACIJA</button>
+<button (click)="reset()">PROMENI PASSWORD</button>
+
+<p>Broj sredjenih basti: {{ finished }}</p>
+<p>Broj dekoratora: {{ decoratorCount }}</p>
+<p>Broj vlasnika: {{ ownerCount }}</p>
+
+<p>Broj izvrsenih zahteva u poslednjih 24 sata: {{ finishedLast24Hours }}</p>
+<p>Broj izvrsenih zahteva u poslednjih 7 dana: {{ finishedLast7Days }}</p>
+<p>Broj izvrsenih zahteva u poslednjih 30 dana: {{ finishedLast30Days }}</p>
+
+<h3>Registrovane kompanije</h3>
+
+<div class="search-and-sort-controls">
+  <input type="text" placeholder="Search by company name" [(ngModel)]="searchCompanyName" (input)="updateFilteredCompanies()" />
+  <input type="text" placeholder="Search by address" [(ngModel)]="searchCompanyAddress" (input)="updateFilteredCompanies()" />
+
+  <button type="button" (click)="sortCompaniesByName()">Sortiraj po imenu</button>
+  <button type="button" (click)="sortCompaniesByAddress()">Sortiraj po adresi</button>
+</div>
+
+<div class="company-list">
+  <div *ngFor="let company of filteredCompanies" class="company-item">
+    <h4>{{ company.name }}</h4>
+    <p>Address: {{ company.address }}</p>
+    <p>Designers:</p>
+    <ul>
+      <li *ngFor="let designer of decoratorsMap.get(company.name) || []">
+        {{ designer.name }} {{ designer.surname }}
+      </li>
+    </ul>
+  </div>
+</div>

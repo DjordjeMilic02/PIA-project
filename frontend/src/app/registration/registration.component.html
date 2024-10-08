@@ -1,0 +1,52 @@
+<form (ngSubmit)="onAddOwner()" #designerForm="ngForm">
+    <h1>Registuj se kao novi vlasnik imanja</h1>
+    <div>
+      <label>Korisnicko ime:</label>
+      <input type="text" [(ngModel)]="newOwner.username" name="username" required>
+    </div>
+    <div>
+      <label>Pasvord:</label>
+      <input type="password" [(ngModel)]="newOwner.password" name="password" required>
+      <div *ngIf="passwordError" style="color: red;">{{ passwordError }}</div>
+    </div>
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="newOwner.email" name="email" required>
+      <div *ngIf="emailError" style="color: red;">{{ emailError }}</div>
+    </div>
+    <div>
+      <label>Ime:</label>
+      <input type="text" [(ngModel)]="newOwner.name" name="name" required>
+    </div>
+    <div>
+      <label>Prezime:</label>
+      <input type="text" [(ngModel)]="newOwner.surname" name="surname" required>
+    </div>
+    <div>
+      <label>Pol:</label>
+      <select [(ngModel)]="newOwner.sex" name="sex" required>
+        <option value="M">M</option>
+        <option value="F">Z</option>
+      </select>
+    </div>
+    <div>
+      <label>Adresa:</label>
+      <input type="text" [(ngModel)]="newOwner.address" name="address" required>
+    </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input type="text" [(ngModel)]="newOwner.phone_number" name="phone_number" required>
+    </div>
+    <div>
+      <label>Broj kreditne kartice:</label>
+      <input type="text" [(ngModel)]="newOwner.credit_card_number" name="credit_card_number" required>
+      <div *ngIf="creditCardError" style="color: red;">{{ creditCardError }}</div>
+    </div>
+    <div>
+      <label>Aplouduj profilnu sliku:</label>
+      <input type="file" (change)="onDesignerFileSelected($event)">
+    </div>
+    <div>
+      <button type="submit">Sumbit</button>
+    </div>
+  </form>

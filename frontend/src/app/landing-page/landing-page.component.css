@@ -1,0 +1,47 @@
+  h3 {
+    border-top: 5px solid blue;
+    padding-bottom: 10px;
+    color: blue;
+  }
+  
+  button {
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: red;
+  }
+  
+  .search-and-sort-controls {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .search-and-sort-controls button {
+    padding: 8px 15px;
+    font-size: 16px;
+  }
+  
+  .company-item {
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+  }
+  
+  .company-item h4 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #007BFF;
+  }
